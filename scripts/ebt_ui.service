@@ -1,0 +1,25 @@
+[Unit]
+Description=Ebt Ui controller
+After=graphical.target
+
+[Service]
+RestartSec=4
+ExecStartPre=/bin/sleep 5
+ExecStart=/home/epilog/ebt-ui/scripts/startEbtUi.sh
+Type=simple
+Restart=always
+User=root
+Environment="DISPLAY=:0"
+Environment="XAUTHORITY=/run/user/1000/gdm/Xauthority"
+Environment="QT_QPA_EGLFS_HIDECURSOR=1"
+Environment="QT_QPA_EGLFS_DISABLE_INPUT=1"
+Environment="QT_QPA_GENERIC_PLUGINS=evdevmouse:abs,evdevkeyboard"
+Environment="QT_QPA_EGLFS_PHYSICAL_WIDTH=160"
+Environment="QT_QPA_EGLFS_PHYSICAL_HEIGHT=90"
+Environment="QT_QPA_EGLFS_WIDTH=800"
+Environment="QT_QPA_EGLFS_HEIGHT=600"
+Environment="QT_QPA_EVDEV_KEYBOARD_PARAMETERS=grab=1"
+#Environment="udevNumber=1"
+
+[Install]
+WantedBy=default.target

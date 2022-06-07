@@ -1,0 +1,20 @@
+<RCC>
+    <qresource prefix="/">
+        <file>qml/main.qml</file>
+        <file>qml/Admin.qml</file>
+        <file>qml/Local.qml</file>
+        <file>qml/Wifi.qml</file>
+        <file>qml/hotspot.qml</file>
+        <file>qml/network.qml</file>
+        <file>qml/Alarm.qml</file>
+        <file>images/ETHERNET.png</file>
+        <file>images/NOTIFICATIONS.png</file>
+        <file>images/SYSTEM.png</file>
+        <file>images/USERS.png</file>
+        <file>images/WIFI.png</file>
+        <file>images/back.png</file>
+        <file>images/index.png</file>
+        <file>images/settings.png</file>
+        <file>images/APP.png</file>
+    </qresource>
+</RCC>
