@@ -1,16 +1,16 @@
-# ebt-ui
+# Industrial User Interface Example for Python Visual AI applicaitons with Qt
 
-ebt-ui is the User Interface to manage hardware configurations and draw related objects with Qt and QML.
+In this repository you can find that the User Interface to manage hardware configurations and draw related objects with Qt and QML for Python AI visual applications.
 
 ## Installation
 
 Qt should be installed in the target. Reference Qt version is 5.15.0. 
-
+Tested with ubuntu 18 and 20.
 
 clone the repo
 
 ```bash
-git clone https://github.com/epilog/ebt-ui.git
+git clone https://github.com/PhysicsX/UI-Example-for-Python-AI-applications-with-Qt.git
 ```
 
 If you do not want to build manually, just run.
