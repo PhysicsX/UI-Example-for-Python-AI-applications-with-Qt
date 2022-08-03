@@ -1,4 +1,4 @@
-# Industrial User Interface Example for Python Visual AI applicaitons with Qt
+# Industrial User Interface Example for Python Visual AI Applications with Qt
 
 In this repository you can find that the User Interface to manage hardware configurations and draw related objects with Qt and QML for Python AI visual applications.
 
@@ -294,41 +294,4 @@ Now you are ready to run the app. Picamera should be connected. Be sure to type 
 ```
 # cd scripts
 # bash run.sh
-```
-
-## Redis set up and test
-Redis is used to store informations about persons
-
-To set up redis:
-```bash
-# cd scripts
-# bash redisSetup.sh
-```
-To create 10 different data in the database
-```bash
-# bash testRedis.sh
-```
-To create 1000 data for stress test
-```bash
-# bash testRedis1000.sh
-```
-
-## Screen calibration
-To calibrate the screen
-```bash
-# cd ebtScreenCalibration
-# bash calibrate.sh
-```
-Then touch the points on the screen during the calibration.
-There must be 9 points.
-
-## How to test the application
-
-```shell
-├── ebtScreenCalibration # screen calibration
-├── images # images for the application
-├── include # hader files
-├── qml # qml design files
-├── scripts # scripts to test or run the application
-├── src # cpp files of the application includes main.cpp
 ```
