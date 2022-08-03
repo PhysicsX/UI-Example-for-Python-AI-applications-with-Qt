@@ -239,7 +239,7 @@ For qtquickcontrols:
 # cd ..
 # tar xf qtquickcontrols-everywhere-src-5.15.0.tar.xz
 # cd qtquickcontrols-everywhere-src-5.15.0
-# /usr/local/QtEpilog/bin/qmake
+# /usr/local/Qt-5.15.0/bin/qmake
 # make -j8
 # make install
 ```
@@ -248,7 +248,7 @@ For qtquickcontrols2:
 # cd ..
 # tar xf qtquickcontrols2-everywhere-src-5.15.0.tar.xz
 # cd qtquickcontrols2-everywhere-src-5.15.0
-# /usr/local/QtEpilog/bin/qmake
+# /usr/local/Qt-5.15.0/bin/qmake
 # make -j8
 # make install
 ```
@@ -257,7 +257,7 @@ For qtmultimedia:
 # cd ..
 # tar xf qtmultimedia-everywhere-src-5.15.0.tar.xz
 # cd qtmultimedia-everywhere-src-5.15.0
-# /usr/local/QtEpilog/bin/qmake
+# /usr/local/Qt-5.15.0/bin/qmake
 # make -j8
 # make install
 ```
@@ -266,7 +266,7 @@ For qtsvg: ( this one is needed for qtvirtualkeyboard)
 # cd ..
 # tar xf qtsvg-everywhere-src-5.15.0.tar.xz
 # cd qtsvg-everywhere-src-5.15.0
-# /usr/local/QtEpilog/bin/qmake
+# /usr/local/Qt-5.15.0/bin/qmake
 # make -j8
 # make install
 ```
@@ -275,7 +275,7 @@ For qtVirtualKeyboard:
 # cd ..
 # tar xf qtvirtualkeyboard-everywhere-src-5.15.0.tar.xz
 # cd qtvirtualkeyboard-everywhere-src-5.15.0
-# /usr/local/QtEpilog/bin/qmake
+# /usr/local/Qt-5.15.0/bin/qmake
 # make -j8
 # make install
 ```
@@ -284,7 +284,7 @@ For qtGraphicalEffects:
 # cd ..
 # tar xf qtgraphicaleffects-everywhere-src-5.15.0.tar.xz
 # cd qtgraphicaleffects-everywhere-src-5.15.0
-# /usr/local/QtEpilog/bin/qmake
+# /usr/local/Qt-5.15.0/bin/qmake
 # make -j8
 # make install
 ```
