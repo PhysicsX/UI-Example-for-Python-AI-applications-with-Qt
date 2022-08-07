@@ -5,7 +5,7 @@ After=graphical.target
 [Service]
 RestartSec=4
 ExecStartPre=/bin/sleep 5
-ExecStart=/home/epilog/ebt-ui/scripts/startEbtUi.sh
+ExecStart=/home/user/ebt-ui/scripts/startEbtUi.sh
 Type=simple
 Restart=always
 User=root
