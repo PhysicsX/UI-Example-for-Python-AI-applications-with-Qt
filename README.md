@@ -290,8 +290,20 @@ For qtGraphicalEffects:
 ```
 
 ## How to test the application
+
+Example is tested in jetson nano/nx.
+Opencv should be installed/compiled with gstreamer option enabled.
+
+![](https://www.uctronics.com/media/catalog/product/cache/5d1f08909b337dbf64263212361f58e9/i/m/imx219_ff_ir_nano_4.jpg)
+
 Now you are ready to run the app. Picamera should be connected. Be sure to type "sudo bash".
 ```
 # cd scripts
 # bash run.sh
+```
+
+Then for the facedetection application:
+```bash
+# cd scripts
+# python3 faceDetectionShm.py
 ```
