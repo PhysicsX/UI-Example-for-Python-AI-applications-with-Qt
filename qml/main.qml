@@ -26,7 +26,7 @@ Window {
 //		console.log(windowMain.height)
 //	}
 
-    property var gstPipeline: "gst-pipeline: shmsrc socket-path=/tmp/foo do-timestamp=true ! video/x-raw, format=(string)BGR, width=(int)840, height=(int)480, framerate=(fraction)30/1 ! videoflip method=horizontal-flip ! autovideoconvert ! qtvideosink"
+    property var gstPipeline: "gst-pipeline: shmsrc socket-path=/tmp/sockTmp do-timestamp=true ! video/x-raw, format=(string)BGR, width=(int)840, height=(int)480, framerate=(fraction)30/1 ! videoflip method=horizontal-flip ! autovideoconvert ! qtvideosink"
     Timer {
         id: timerSource
         interval: 500;
@@ -80,12 +80,6 @@ Window {
 
            	source: gstPipeline
 
-            	//source: "gst-pipeline: videotestsrc ! qtvideosink"
-            	//source: "gst-pipeline: playbin uri=https://www.freedesktop.org/software/gstreamer-sdk/data/media/sintel_trailer-480p.webm"
-            	//source: "gst-pipeline: nvarguscamerasrc ! autovideoconvert ! qtvideosink"
-            	//source: "file:///home/jnano/Desktop/build-VideoOutput-Desktop-Release/file_example_WEBM_480_900KB.webm"
-            	//source: "file:///home/ulas/Desktop/file_example_WEBM_1920_3_7MB.webm"
-            	//source: "file:///home/epilog/ebt-ui/video.avi"
             	autoPlay: true
         
                 onErrorChanged: {
@@ -93,7 +87,7 @@ Window {
 
                 }
                onStatusChanged:{
-			console.log("status ",status)
+                console.log("status ",status)
                         if(status !== MediaPlayer.EndOfMedia)
                         {
                                 if(flagScreen === false)
@@ -101,7 +95,7 @@ Window {
 					flagScreen = true
 					timerSource.start()
                                 }
-				if(status == 0)
+                        if(status == 0)
                                 {
                                         console.log("media satatus: No Media")
                                 }
