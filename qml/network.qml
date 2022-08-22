@@ -543,7 +543,7 @@ Item {
                     //{
                         if(tabBar.currentIndex === 0)
                         {
-                            networkManager.applyNetwork(tabBar.currentIndex, connectionTab.currentIndex);
+                            networkManager.applyNetwork(tabBar.currentIndex);
                             networkManager.enableDHCP = 0;
                         }
                         else if(tabBar.currentIndex === 1)

@@ -19,7 +19,7 @@ class NetworkManager : public QObject, ControllerAdaptor
     Q_OBJECT
 
 public:
-    Q_INVOKABLE void applyNetwork(bool arg1, bool arg2);
+    Q_INVOKABLE void applyNetwork(bool tabBar);
     Q_INVOKABLE void setStaticConf(QString ip, QString mask, QString gateway);
 
     //wlan can be removed from here. It is moved to wifiConf.h
