@@ -8,8 +8,14 @@ NetworkManager::NetworkManager(): QObject()
 
     controller = getInstance();
 
+    if(!controller)
+    {
+        return;
+    }
+
     QObject::connect(controller,SIGNAL(sendVis(bool, int)),this,SLOT(setKeyboardProp(bool, int)));
 
+    // thread pool or async thread handler is good idea instead of throwing one.
     std::thread([this](){ // std::thread t([controller,this](){ --> capture of non-variable
 
         QMutexLocker locker(&mtx);
@@ -32,33 +38,23 @@ NetworkManager::NetworkManager(): QObject()
             out = "";
 
         if(out == "manual")
+        {
         setEnableDHCP(true);
+        }
         else if(out == "auto")
-        setEnableDHCP(false);
-
-    //    process.start("bash", QStringList()<<"-c"<<"nmcli connection show 'Wired connection 1' | grep  ipv4.address");
-    //    process.waitForFinished();
-    //    p_stdout = process.readAllStandardOutput();
-    //     p_stderr = process.readAllStandardError();
-    //    //qDebug()<<p_stdout;
-    //    //qDebug()<<p_stderr;
-    //    lastSlash = p_stdout.lastIndexOf('/');
-    //    prevSpace = p_stdout.lastIndexOf(' ');
-    //    out = p_stdout.mid(prevSpace+1, lastSlash - prevSpace-1);
-    //    //qDebug()<<out;
-    //    if(out.contains("\n"))
-    //        out = "";
+        {
+            setEnableDHCP(false);
+        }
 
         process.start("bash", QStringList()<<"-c"<<"nmcli -g ip4.address connection show 'Wired connection 1'");
         process.waitForFinished();
         p_stdout = process.readAllStandardOutput();
         p_stderr = process.readAllStandardError();
-        //qDebug()<<p_stdout;
-        //qDebug()<<p_stderr;
+
         if(p_stdout.contains("|")) // there can be old ip addresses. Remove them !
         {
             int numberLine = p_stdout.count("|");
-            //int ipNumber = numberLine + 1;
+
             for(int i=0; i < numberLine; i++)
             {
                 lastSlash = p_stdout.indexOf('/');
@@ -69,118 +65,59 @@ NetworkManager::NetworkManager(): QObject()
                 bool result = process.waitForFinished();
                 if(!result)
                 {
-                    qDebug()<<"ip addr can not deleted "<<result;
+                    qDebug()<<"ip addr can not be deleted "<<result;
                 }
                 p_stdout.remove(0,lastSlash+6);
 
             }
 
             lastSlash = p_stdout.lastIndexOf('/');
-            //prevSpace = p_stdout.lastIndexOf(' ');
             out = p_stdout.mid(0, lastSlash);
-            //qDebug()<<out;
-            if(out.contains("\n"))
-                out = "";
 
-            QString ip = out;
-            setIpAddr(ip);
+            if(!out.contains("\n"))
+            {
+                setIpAddr(out);
+            }
 
         }
         else
         {
-        lastSlash = p_stdout.lastIndexOf('/');
-        //prevSpace = p_stdout.lastIndexOf(' ');
-        out = p_stdout.mid(0, lastSlash);
-        //qDebug()<<out;
-        if(out.contains("\n"))
-            out = "";
+            lastSlash = p_stdout.lastIndexOf('/');
+            out = p_stdout.mid(0, lastSlash);
 
-        QString ip = out;
-        setIpAddr(ip);
+            if(!out.contains("\n"))
+            {
+                setIpAddr(out);
+            }
         }
 
         process.start("bash", QStringList()<<"-c"<<"nmcli connection show 'Wired connection 1' | grep  -w routers");
         process.waitForFinished();
-         p_stdout = process.readAllStandardOutput();
-         p_stderr = process.readAllStandardError();
-        //qDebug()<<p_stdout;
+        p_stdout = process.readAllStandardOutput();
+        p_stderr = process.readAllStandardError();
+
         lastSlash = p_stdout.lastIndexOf('\n');
         prevSpace = p_stdout.lastIndexOf(' ');
         out = p_stdout.mid(prevSpace+1, lastSlash - prevSpace-1);
-        //qDebug()<<out;
-        if(out.contains("\n"))
-            out = "";
 
-        setRouterAddr(out);
+        if(!out.contains("\n"))
+        {
+            setRouterAddr(out);
+        }
 
         process.start("bash", QStringList()<<"-c"<<"nmcli connection show 'Wired connection 1' | grep  -w subnet_mask");
         process.waitForFinished();
         p_stdout = process.readAllStandardOutput();
         p_stderr = process.readAllStandardError();
-        //qDebug()<<p_stdout;
+
         lastSlash = p_stdout.lastIndexOf('\n');
         prevSpace = p_stdout.lastIndexOf(' ');
         out = p_stdout.mid(prevSpace+1, lastSlash - prevSpace-1);
-        //qDebug()<<out;
+
         if(out.contains("\n"))
             out = "";
 
         setMaskAddr(out);
-
-        qDebug()<<m_ipAddr;
-        //m_enableDHCP = false;
-        //emit enableDHCPChanged();
-        //setDHCP();
-
-
-        //for wifi configuration
-        process.start("bash", QStringList()<<"-c"<<"nmcli -g general.connection device show wlan0"); // get connection name (id)
-        if(!process.waitForFinished())
-            qDebug()<<"can not get hotspot name";
-        p_stdout = process.readAllStandardOutput();
-        qDebug()<<p_stdout;
-        QString hotspot = "Hotspot";
-        if(p_stdout.contains(hotspot, Qt::CaseInsensitive))
-        {
-            qDebug()<<"hotspot enabled";
-            setEnableAP(false);
-            setWlanMaskAddr("");
-            setWlanRouterAddr("");
-        }
-        else
-        {
-            qDebug()<<"station enabled";
-            setEnableAP(true);
-
-            QString cmd = "nmcli -g ip4.gateway device show wlan0";
-            process.start("bash", QStringList()<<"-c"<<cmd);
-            process.waitForFinished();
-            p_stdout = process.readAllStandardOutput();
-            qDebug()<<"wif ip addr " + p_stdout;
-
-            lastSlash = p_stdout.lastIndexOf("\n");
-            //prevSpace = p_stdout.lastIndexOf(' ');
-            out = p_stdout.mid(0, lastSlash);
-            if(out.contains("\n"))
-                out = "";
-
-            setWlanRouterAddr(out);
-            setWlanRouterAddr("");
-        }
-        QString cmd = "nmcli -g ip4.address device show wlan0";
-        process.start("bash", QStringList()<<"-c"<<cmd);
-        process.waitForFinished();
-        p_stdout = process.readAllStandardOutput();
-        qDebug()<<"wif ip addr " + p_stdout;
-
-        lastSlash = p_stdout.lastIndexOf('/');
-        //prevSpace = p_stdout.lastIndexOf(' ');
-        out = p_stdout.mid(0, lastSlash);
-        if(out.contains("\n"))
-            out = "";
-
-        QString wIp = out;
-        setWlanIpAddr(wIp);
 
         if(!getIpAddr().isEmpty())
         {
@@ -200,7 +137,6 @@ void NetworkManager::setKeyboardProp(bool flag, int width)
     setKeyFlag(flag);
     //update keyboard width for flicking
     setKeyWidth(width);
-    //qDebug()<<width;
     return;
 }
 
@@ -212,7 +148,6 @@ NetworkManager::~NetworkManager()
 
 bool NetworkManager::setIp()
 {
-    qDebug()<<"Ip is set";
     return true;
 }
 
@@ -223,151 +158,18 @@ void NetworkManager::setStaticConf(QString ip, QString mask, QString gateway)
     gateway = "";
 }
 
-void NetworkManager::applyNetwork(bool tabBar, bool conTab)
+void NetworkManager::applyNetwork(bool tabBar)
 {
-    //qDebug()<<"applyNetwork is called";
-    //qDebug()<<tabBar<<" "<<conTab;
-
-
-        if(conTab == 0)
-        {
-            if(tabBar == 0)
-            {
-                //qDebug()<<"Wired DHCP settings";
-                setDHCP();
-            }
-            else
-            {
-                //qDebug()<<"Wired Static settings";
-                setStatic();
-            }
-
-        }
-        else if(conTab == 1)
-        {
-
-            if(tabBar == 0)
-            {
-                //qDebug()<<"Wifi AP settings";
-
-                QProcess process;
-
-                process.start("bash", QStringList()<<"-c"<<"nmcli -g general.connection device show wlan0"); // get connection name (id)
-                if(!process.waitForFinished())
-                    qDebug()<<"can not get hotspot name";
-                QString p_stdout = process.readAllStandardOutput();
-                qDebug()<<"hsda"<<p_stdout;
-
-                int lastSlash = p_stdout.lastIndexOf("\n");
-                //prevSpace = p_stdout.lastIndexOf(' ');
-                QString out = p_stdout.mid(0, lastSlash);
-                if(out.contains("\n"))
-                    out = "";
-                QString cmd = "nmcli connection delete id "+out;
-                process.start("bash", QStringList()<<"-c"<<cmd);
-                if(!process.waitForFinished())
-                    qDebug()<<"wifi can not deleted, check wifi hardware is exist";
-
-                process.start("bash", QStringList()<<"-c"<<"nmcli r wifi off"); // enable wifi
-                if(!process.waitForFinished())
-                    qDebug()<<"wifi can not off, check wifi hardware is exist";
-
-
-                process.start("bash", QStringList()<<"-c"<<"nmcli r wifi on"); // enable wifi
-                if(!process.waitForFinished())
-                    qDebug()<<"wifi can not started, check wifi hardware is exist";
-
-
-                std::thread([this](){
-
-                    QMutexLocker locker(&mtx);
-                    std::this_thread::sleep_for(std::chrono::milliseconds(3000));
-
-                    QProcess process;
-                    process.start("bash", QStringList()<<"-c"<<"nmcli dev wifi hotspot ifname wlan0 ssid EPILOG_AP password 'epilog2020'");
-                    if(process.waitForFinished())
-                        qDebug()<<"Hotspot is created";
-                    else
-                        qDebug()<<"Hotspot can not be created";
-
-
-                    process.start("bash", QStringList()<<"-c"<<"nmcli -g general.connection device show wlan0"); // get connection name (id)
-                    if(!process.waitForFinished())
-                        qDebug()<<"can not get hotspot name";
-                    QString p_stdout = process.readAllStandardOutput();
-                    qDebug()<<p_stdout;
-                    QString hotspot = "Hotspot";
-                    if(p_stdout.contains(hotspot, Qt::CaseInsensitive))
-                    {
-                        QString cmd = "nmcli con up"+hotspot;
-                        process.start("bash", QStringList()<<"-c"<<cmd);
-                        if(!process.waitForFinished())
-                            qDebug()<<"Hotspot can not bring up";
-                    }
-                    else
-                    {
-                        qDebug()<<"Hotspot name can not find";
-                    }
-
-                    QString cmd = "nmcli -g ip4.address device show wlan0";
-                    process.start("bash", QStringList()<<"-c"<<cmd);
-                    process.waitForFinished();
-                    p_stdout = process.readAllStandardOutput();
-                    //qDebug()<<"wif ip addr " + p_stdout;
-
-                    int lastSlash = p_stdout.lastIndexOf('/');
-                    //prevSpace = p_stdout.lastIndexOf(' ');
-                    QString out = p_stdout.mid(0, lastSlash);
-                    if(out.contains("\n"))
-                        out = "";
-
-                    QString wIp = out;
-                    setWlanIpAddr(wIp);
-                    setWlanMaskAddr("");
-                    setWlanRouterAddr("");
-
-                }).detach();
-
-            }
-            else
-            {
-                //qDebug()<<"Wifi Station settings";
-
-                QProcess process;
-
-                process.start("bash", QStringList()<<"-c"<<"nmcli -g general.connection device show wlan0"); // get connection name (id)
-                if(!process.waitForFinished())
-                    qDebug()<<"can not get hotspot name";
-                QString p_stdout = process.readAllStandardOutput();
-                qDebug()<<p_stdout;
-
-                int lastSlash = p_stdout.lastIndexOf("\n");
-                //prevSpace = p_stdout.lastIndexOf(' ');
-                QString out = p_stdout.mid(0, lastSlash);
-                if(out.contains("\n"))
-                    out = "";
-                QString cmd = "nmcli connection delete id "+out;
-                process.start("bash", QStringList()<<"-c"<<cmd);
-                if(!process.waitForFinished())
-                    qDebug()<<"wifi can not deleted, check wifi hardware is exist";
-
-                process.start("bash", QStringList()<<"-c"<<"nmcli r wifi off"); // enable wifi
-                if(!process.waitForFinished())
-                    qDebug()<<"wifi can not off, check wifi hardware is exist";
-
-
-                process.start("bash", QStringList()<<"-c"<<"nmcli r wifi on"); // enable wifi
-                if(!process.waitForFinished())
-                    qDebug()<<"wifi can not started, check wifi hardware is exist";
-
-            }
-
-        }
-        else
-        {
-            qDebug()<<"wrong conTab parameter";
-        }
-
+    if(tabBar == 0)
+    {
+        //qDebug()<<"Wired DHCP settings";
+        setDHCP();
+    }
+    else
+    {
+        //qDebug()<<"Wired Static settings";
+        setStatic();
+    }
 }
 
 void NetworkManager::setIpAddr(const QString &ip)
