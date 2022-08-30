@@ -13,13 +13,8 @@
 #include <memory>
 #include <iostream>
 #include <thread>
-#include "hotspot.h"
 #include "networkManager.h"
-#include "wifiConf.h"
 #include "backController.h"
-#include "local.h"
-#include "alarm.h"
-#include "admin.h"
 
 //not used currently
 class Helper : public QObject
