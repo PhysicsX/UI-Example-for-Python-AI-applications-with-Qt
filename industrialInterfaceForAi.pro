@@ -15,17 +15,12 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-        src/admin.cpp \
-        src/alarm.cpp \
+        src/networkManager.cpp \
         src/backController.cpp \
         src/controllerAdaptor.cpp \
         src/helper.cpp \
-        src/hotspot.cpp \
-        src/local.cpp \
         src/main.cpp \
-        src/networkManager.cpp \
-        src/redisInterface.cpp \
-        src/wifiConf.cpp
+
 
 
 
