@@ -15,10 +15,8 @@ NetworkManager::NetworkManager(): QObject()
 
     QObject::connect(controller,SIGNAL(sendVis(bool, int)),this,SLOT(setKeyboardProp(bool, int)));
 
-    // thread pool or async thread handler is good idea instead of throwing one.
-    std::thread([this](){ // std::thread t([controller,this](){ --> capture of non-variable
+    auto job = [this](){
 
-        QMutexLocker locker(&mtx);
         controller->disableBack();
 
         setButtonStatus(false);
@@ -127,8 +125,10 @@ NetworkManager::NetworkManager(): QObject()
         setButtonStatus(true);
         controller->enableBack();
 
-    }).detach();
+    };
 
+    handler.addQueue(job);
+    handler.processQueue();
 }
 
 void NetworkManager::setKeyboardProp(bool flag, int width)
@@ -142,7 +142,8 @@ void NetworkManager::setKeyboardProp(bool flag, int width)
 
 NetworkManager::~NetworkManager()
 {
-    QMutexLocker locker(&mtx);
+    // Wait is there any process in the queue
+    while(handler.checkQueueIsEmpty());
 }
 
 
@@ -305,10 +306,8 @@ bool NetworkManager::getButtonStatus() const
 bool NetworkManager::setDHCP()
 {
 
-    std::thread([this](){
+    auto job = [this](){
 
-
-        QMutexLocker locker(&mtx);
         controller = getInstance();
         controller->disableBack();
         QString tmpStr = controller->getText();
@@ -449,7 +448,9 @@ bool NetworkManager::setDHCP()
         //backCont->changeText(tmpStr + "IP: "+ getIpAddr());
 
         controller->enableBack();
-    }).detach();
+    };
+
+    handler.addQueue(job);
 
     return true;
 }
@@ -458,9 +459,8 @@ bool NetworkManager::setStatic()
 {
 
 
-    std::thread([this](){
+    auto job = [this](){
 
-        QMutexLocker locker(&mtx);
         controller = getInstance();
         controller->disableBack();
         bool result = false;
@@ -526,7 +526,9 @@ bool NetworkManager::setStatic()
         }
 
         controller->enableBack();
-    }).detach();
+    };
+
+    handler.addQueue(job);
 
     return true;
 }

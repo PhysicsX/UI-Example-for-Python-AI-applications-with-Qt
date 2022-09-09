@@ -12,7 +12,7 @@
 #include <thread>
 #include <QMutex>
 #include "controllerAdaptor.h"
-
+#include "processQueue.h"
 
 class NetworkManager : public QObject, ControllerAdaptor
 {
@@ -122,6 +122,5 @@ public:
         bool keyFlag;
         int keyWidth;
 
-        mutable QMutex mtx;
-
+        queueProcess<std::function<void()>> handler;
 };
