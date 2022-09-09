@@ -33,16 +33,11 @@ QML_DESIGNER_IMPORT_PATH =
 INCLUDEPATH += include
 
 HEADERS += \
-    include/admin.h \
-    include/alarm.h \
     include/backController.h \
     include/controllerAdaptor.h \
     include/helper.h \
-    include/hotspot.h \
-    include/local.h \
     include/networkManager.h \
-    include/redisInterface.h \
-    include/wifiConf.h
+    include/processQueue.h \
 
 DISTFILES += \
     images/APP.png \

@@ -1,12 +1,7 @@
 <RCC>
     <qresource prefix="/">
         <file>qml/main.qml</file>
-        <file>qml/Admin.qml</file>
-        <file>qml/Local.qml</file>
-        <file>qml/Wifi.qml</file>
-        <file>qml/hotspot.qml</file>
         <file>qml/network.qml</file>
-        <file>qml/Alarm.qml</file>
         <file>images/ETHERNET.png</file>
         <file>images/NOTIFICATIONS.png</file>
         <file>images/SYSTEM.png</file>
