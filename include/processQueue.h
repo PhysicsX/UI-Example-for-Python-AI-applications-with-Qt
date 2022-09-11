@@ -67,7 +67,7 @@ public:
     }
 
   }
-
+private:
   std::future<void> fut;
   std::queue<T> mQueue;
   std::mutex mMutex;
