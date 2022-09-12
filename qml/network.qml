@@ -28,7 +28,6 @@ Item {
             gateway.readOnly = true;
         }
         tabBar.currentIndex = networkManager.enableDHCP;
-	//connectionTab.currentIndex = networkManager.enableAP;
     }
 
 
@@ -60,44 +59,12 @@ Item {
             }
         }
 
-        onWlanIpAddrChanged:{
-            if(connectionTab.currentIndex === 1)
-            {
-                control.text = wlanIpAddr;
-                //console.log("Wipaddr is updated");
-            }
-        }
-
-        onWlanMaskAddrChanged:{
-            if(connectionTab.currentIndex === 1)
-            {
-                mask.text = wlanMaskAddr;
-                //console.log("WmaskAddr is updated");
-            }
-        }
-
-        onWlanRouterAddrChanged:{
-            if(connectionTab.currentIndex === 1)
-            {
-                gateway.text = wlanRouterAddr;
-                //console.log("WrouterAddr is updated");
-            }
-        }
-
         onEnableDHCPChanged:{
             if(connectionTab.currentIndex === 0)
             {
                 tabBar.currentIndex = enableDHCP;
                 //console.log("enableDHCP is updated");
             }
-        }
-
-        onEnableAPChanged:{
-             if(connectionTab.currentIndex === 1)
-             {
-                tabBar.currentIndex = enableAP;
-                //console.log("enableAP is updated");
-             }
         }
 
         onButtonStatusChanged:{
@@ -343,8 +310,6 @@ Item {
         }
     }
 
-
-
     Rectangle{
         width: 300
         height: 32
@@ -558,22 +523,6 @@ Item {
                                 networkManager.enableDHCP = 1;
                             }
                         }
-                    //}
-                    //else if(connectionTab.currentIndex === 1)
-                    //{
-                        //if(tabBar.currentIndex === 0)
-                        //{
-                            //networkManager.applyNetwork(tabBar.currentIndex, connectionTab.currentIndex);
-                            //networkManager.enableAP = 0;
-                        //}
-                        //else if(tabBar.currentIndex === 1)
-                        //{
-                            //networkManager.applyNetwork(tabBar.currentIndex, connectionTab.currentIndex);
-                            //networkManager.enableAP = 1; // station mode
-                        //}
-
-                    //}
-
             }
         }
     }

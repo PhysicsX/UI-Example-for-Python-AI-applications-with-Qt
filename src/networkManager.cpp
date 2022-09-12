@@ -163,12 +163,10 @@ void NetworkManager::applyNetwork(bool tabBar)
 {
     if(tabBar == 0)
     {
-        //qDebug()<<"Wired DHCP settings";
         setDHCP();
     }
     else
     {
-        //qDebug()<<"Wired Static settings";
         setStatic();
     }
 }
@@ -215,30 +213,6 @@ void NetworkManager::setRouterAddr(const QString &routerAddr)
     }
 }
 
-void NetworkManager::setWlanIpAddr(const QString &wIp)
-{
-    m_WipAddr = wIp;
-    emit wlanIpAddrChanged();
-}
-
-void NetworkManager::setWlanRouterAddr(const QString &wRouter)
-{
-    m_WmaskAddr = wRouter;
-    emit wlanRouterAddrChanged();
-}
-
-void NetworkManager::setWlanMaskAddr(const QString &wMask)
-{
-    m_WrouterAddr = wMask;
-    emit wlanMaskAddrChanged();
-}
-
-void NetworkManager::setEnableAP(const bool wFlag)
-{
-    m_enableAP = wFlag;
-    emit enableAPChanged();
-}
-
 void NetworkManager::setButtonStatus(const bool stat)
 {
     buttonStatus = stat;
@@ -256,7 +230,6 @@ void NetworkManager::setKeyWidth(const int width)
     keyWidth = width;
     emit keyWidthChanged();
 }
-
 
 QString NetworkManager::getIpAddr() const
 {
@@ -276,26 +249,6 @@ QString NetworkManager::getMaskAddr() const
 bool NetworkManager::getEnableDHCP() const
 {
     return m_enableDHCP;
-}
-
-QString NetworkManager::getWlanIpAddr() const
-{
-    return m_WipAddr;
-}
-
-QString NetworkManager::getWlanRouterAddr() const
-{
-    return m_WrouterAddr;
-}
-
-QString NetworkManager::getWlanMaskAddr() const
-{
-    return m_WmaskAddr;
-}
-
-bool NetworkManager::getEnableAP() const
-{
-    return m_enableAP;
 }
 
 bool NetworkManager::getButtonStatus() const
