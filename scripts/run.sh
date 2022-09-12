@@ -8,12 +8,12 @@ fi
 
 cd ..
 
-/usr/local/QtEpilog/bin/qmake
+/usr/local/QtDir/bin/qmake
 make -j4
 
 cd scripts
 
-cp ebt_ui.service /etc/systemd/system
+cp ai_ui.service /etc/systemd/system
 systemctl daemon-reload
 systemctl enable ebt_ui.service
 systemctl restart ebt_ui.service

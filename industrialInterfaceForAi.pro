@@ -56,9 +56,9 @@ DISTFILES += \
     qml/delegate.qml \
     qml/hotspot.qml \
     qml/network.qml \ \
+    scripts/ai_ui.service \
     scripts/autologin.sh \
     scripts/buildQt.sh \
-    scripts/ebt_ui.service \
     scripts/redisSetup.sh \
     scripts/run.sh \
     scripts/setupDocker.sh \

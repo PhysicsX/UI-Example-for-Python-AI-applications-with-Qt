@@ -159,14 +159,15 @@ echo "Modules are installed built each one "
 echo "qtbase "
 sleep 1
 
-DIR="/usr/local/QtEpilog/include/QtCore"
+QtDir="QtDir"
+DIR="/usr/local/$QtDir/include/QtCore"
 if [ -d "$DIR" ]; then
 
   echo "qtbase is exist ${DIR}..."
 else
 	tar xf $qtbaseXZ
 	cd $HOME/$qtbaseFile
-	./configure -opengl es2 -opensource -confirm-license -force-debug-info -prefix /usr/local/QtEpilog -nomake examples -nomake tests -v
+        ./configure -opengl es2 -opensource -confirm-license -force-debug-info -prefix /usr/local/$QtDir -nomake examples -nomake tests -v
 	make -j8
 	make install
 	export QT_SELECT=5
@@ -175,63 +176,63 @@ fi
 
 tar xf $qtdeclarativeXZ
 cd $HOME/$qtdeclarativeFile
-/usr/local/QtEpilog/bin/qmake
+/usr/local/$QtDir/bin/qmake
 make -j8
 make install
 cd ..
 
 tar xf $HOME/$qtquickcontrolsXZ
 cd $HOME/$qtquickcontrolsFile
-/usr/local/QtEpilog/bin/qmake
+/usr/local/$QtDir/bin/qmake
 make -j8
 make install
 cd ..
 
 tar xf $HOME/$qtquickcontrols2XZ
 cd $HOME/$qtquickcontrols2File
-/usr/local/QtEpilog/bin/qmake
+/usr/local/$QtDir/bin/qmake
 make -j8
 make install
 cd ..
  
 tar xf $HOME/$qtmultimediaXZ
 cd $HOME/$qtmultimediaFile
-/usr/local/QtEpilog/bin/qmake
+/usr/local/$QtDir/bin/qmake
 make -j8
 make install
 cd ..
  
 tar xf $HOME/$qtsvgXZ
 cd $HOME/$qtsvgFile
-/usr/local/QtEpilog/bin/qmake
+/usr/local/$QtDir/bin/qmake
 make -j8
 make install
 cd ..
 
 tar xf $HOME/$qtvirtualkeyboardXZ
 cd $HOME/$qtvirtualkeyboardFile
-/usr/local/QtEpilog/bin/qmake
+/usr/local/$QtDir/bin/qmake
 make -j8
 make install
 cd ..
 
 tar xf $HOME/$qtgraphicaleffectsXZ
 cd $HOME/$qtgraphicaleffectsFile
-/usr/local/QtEpilog/bin/qmake
+/usr/local/$QtDir/bin/qmake
 make -j8
 make install
 cd ..
 
 tar xf $HOME/$qtwebsocketsXZ
 cd $HOME/$qtwebsocketsFile
-/usr/local/QtEpilog/bin/qmake
+/usr/local/$QtDir/bin/qmake
 make -j8
 make install
 cd ..
 
 tar xf $HOME/$qtwebglpluginXZ
 cd $HOME/$qtwebglpluginFile
-/usr/local/QtEpilog/bin/qmake
+/usr/local/$QtDir/bin/qmake
 make -j8
 make install
 cd ..

@@ -1,11 +1,11 @@
 [Unit]
-Description=Ebt Ui controller
+Description=User Interface for AI
 After=graphical.target
 
 [Service]
 RestartSec=4
 ExecStartPre=/bin/sleep 5
-ExecStart=/home/user/ebt-ui/scripts/startEbtUi.sh
+ExecStart=<link/to/binary>
 Type=simple
 Restart=always
 User=root
