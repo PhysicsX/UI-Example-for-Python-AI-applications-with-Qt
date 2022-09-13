@@ -91,11 +91,11 @@ Window {
                         if(status !== MediaPlayer.EndOfMedia)
                         {
                                 if(flagScreen === false)
-				{
-					flagScreen = true
-					timerSource.start()
+                                {
+                                    flagScreen = true
+                                    timerSource.start()
                                 }
-                        if(status == 0)
+                                if(status == 0)
                                 {
                                         console.log("media satatus: No Media")
                                 }
@@ -254,7 +254,6 @@ Window {
                             color: "#ffffff"
                         }
 
-                        signal qmlSignalPass()
                         TapHandler{
                             onTapped: {
 
@@ -266,7 +265,6 @@ Window {
                                 streaming.z = 30
                                 //password.visible = false; // this do not work because of parent child relationship
                                 //so visibility shoul be handled by z and opacity property
-                                //back.qmlSignalPass(); // same as above, c++ part do not handle
                             }
                         }
                 }
@@ -291,9 +289,6 @@ Window {
                 }
             }
 
-
-
-
                 TextField {
                     id: passTextField
                     objectName: "passTextField"
@@ -303,7 +298,7 @@ Window {
                     x:(windowMain.width/2 - width/2)
                     placeholderText: "Enter PIN"
                     echoMode: TextInput.Password
-		    font.pointSize: 8
+                    font.pointSize: 8
                     //https://bugreports.qt.io/browse/QTBUG-85694
                     //because TapHandler bug it is need to change not only visible property also with z value
                     onEditingFinished :
@@ -373,7 +368,6 @@ Window {
                   color:"transparent"
                   enabled: true
 
-
                       Image
                       {
                       //source:"qrc:/back.png"
@@ -410,11 +404,10 @@ Window {
                                     stackView.pop();
                                     titleSett.text = "SETTINGS"
                               }
-                                console.log(stackView.depth)
+                              console.log(stackView.depth)
                               //passTextField.visible = false;
                               //password.visible = false; // this do not work because of parent child relationship
                               //so visibility shoul be handled by z and opacity property
-                              //back.qmlSignalPass(); // same as above, c++ part do not handle
                           }
                       }
               }
@@ -439,24 +432,6 @@ Window {
 
                     const str = titleSett.text;
                     if(titleSett.text === 'Configuring device please wait ....')
-                    {
-                        anim.running = true;
-                    }
-                    else if(titleSett.text === 'Connecting...' ||
-                            titleSett.text === 'Not able to connect. Check router status or password.' ||
-                            titleSett.text === "Disconnecting..." ||
-                            titleSett.text === "WIFI Disconnected..." ||
-                            titleSett.text === "Database is loading ...." ||
-                            titleSett.text === "WIFI Disconnected..."
-                            )
-                    {
-                        anim.running = true;
-                    }
-                    else if(titleSett.text === 'Scanning Network.....')
-                    {
-                        anim.running = true;
-                    }
-                    else if(str.includes("Starting"))
                     {
                         anim.running = true;
                     }
@@ -489,7 +464,6 @@ Window {
                 //opacity: 0.3
                 y: 40
                 z: 30
-               // objectName: "pageModel"
                   ListModel {
                         id: pageModel
                         objectName: "pageModel2"
@@ -504,18 +478,6 @@ Window {
                           }
                           ListElement {
                               title: "USERS"
-                              page: "network.qml"
-                          }
-                          ListElement {
-                              title: "NOTIFICATIONS"
-                              page: "network.qml"
-                          }
-                          ListElement {
-                              title: "SYSTEM"
-                              page: "network.qml"
-                          }
-                          ListElement {
-                              title: "APP"
                               page: "network.qml"
                           }
 
@@ -618,7 +580,7 @@ Window {
             {
                 keyVis.keyFlag = keyVis.keyFlag ? false : true
                 keyVis.sendVis(keyVis.keyFlag, inputPanel.y);
-		if(keyVis.keyFlag === true)
+                if(keyVis.keyFlag === true)
                 {
                       flickable.contentY = 50
                 }

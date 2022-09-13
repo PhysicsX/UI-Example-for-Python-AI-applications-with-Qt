@@ -6,9 +6,7 @@ Item {
     id: networkSettings
     width: parent.width
     height: parent.height
-    signal example()
 
-    objectName: "networkSettings"
     Component.onCompleted: {
 
         console.log("Network loaded");
@@ -262,51 +260,6 @@ Item {
                     }
                 }
             }
-            TabButton {
-                width: 272
-                height: 32
-                text: "Wifi"
-                font.pointSize: 16
-                id: wifiTab
-                contentItem: Text {
-                    text: wifiTab.text
-                    font.pointSize: 19
-                    horizontalAlignment: Text.AlignHCenter
-                    verticalAlignment: Text.AlignVCenter
-                    color: "white"
-                }
-                background: Rectangle {
-                    color: connectionTab.currentIndex == 1 ? "blue" : "gray"
-                    //radius: 10
-                }
-
-                onClicked:{
-                    tabDhcp.text = "Hotspot"
-                    tabStatic.text = "STATION"
-                    tabBar.currentIndex = networkManager.enableAP; //enable ap mode !
-
-                    if(networkManager.enableAP === false)
-                    {
-                        //console.log("ap mode active");
-                        control.text = networkManager.wlanIpAddr;
-                        mask.text = networkManager.wlanMaskAddr
-                        gateway.text = networkManager.wlanRouterAddr
-                        control.readOnly = true;
-                        mask.readOnly = true;
-                        gateway.readOnly = true;
-                    }
-                    else if(networkManager.enableAP === true)
-                    {
-                        //console.log("station mode active");
-                        control.text = networkManager.wlanIpAddr;
-                        mask.text = networkManager.wlanMaskAddr
-                        gateway.text = networkManager.wlanRouterAddr
-                        control.readOnly = true;
-                        mask.readOnly = true;
-                        gateway.readOnly = true;
-                    }
-                }
-            }
         }
     }
 
@@ -493,13 +446,11 @@ Item {
                 }
             }
             objectName: "controlButton"
-            signal qmlSignalForIpChange()
             id:controlButton
 
 
             onClicked:
             {
-                controlButton.qmlSignalForIpChange()
 //                console.log("Apply is clicked");
 //                console.log("tabbar "+tabBar.currentIndex);
 //                console.log("connectionTab "+connectionTab.currentIndex);
