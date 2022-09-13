@@ -53,7 +53,6 @@ DISTFILES += \
     qml/Alarm.qml \
     qml/Local.qml \
     qml/Wifi.qml \
-    qml/delegate.qml \
     qml/hotspot.qml \
     qml/network.qml \ \
     scripts/ai_ui.service \
