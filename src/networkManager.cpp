@@ -131,6 +131,15 @@ NetworkManager::NetworkManager(): QObject()
     handler.processQueue();
 }
 
+NetworkManager::~NetworkManager()
+{
+    // Wait is there any process in the queue
+    while(handler.safeToLeaveProcess())
+    {
+        qDebug()<<"Process is not finished";
+    }
+}
+
 void NetworkManager::setKeyboardProp(bool flag, int width)
 {
     // update keyboard visibility flag
@@ -139,13 +148,6 @@ void NetworkManager::setKeyboardProp(bool flag, int width)
     setKeyWidth(width);
     return;
 }
-
-NetworkManager::~NetworkManager()
-{
-    // Wait is there any process in the queue
-    while(handler.checkQueueIsEmpty());
-}
-
 
 bool NetworkManager::setIp()
 {

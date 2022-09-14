@@ -14,9 +14,9 @@ public:
 
     ~queueProcess() {
         {
-        std::lock_guard<std::mutex> lock{mMutex};
-        runFlag = true;
-        mCondVar.notify_one();
+            std::lock_guard<std::mutex> lock{mMutex};
+            runFlag = true;
+            mCondVar.notify_one();
         }
         if(fut.valid())
         {
@@ -33,10 +33,22 @@ public:
 
   }
 
-  bool checkQueueIsEmpty()
+  bool safeToLeaveProcess()
   {
-      std::lock_guard<std::mutex> lock{mMutex};
-      return mQueue.size() ? true : false;
+      {
+          std::lock_guard<std::mutex> lock{mMutex};
+          runFlag = true;
+          mCondVar.notify_one();
+      }
+      if(fut.valid())
+      {
+          fut.wait();
+          return false;
+      }
+      else
+      {
+          return true;
+      }
   }
 
   void processQueue() {
@@ -65,8 +77,8 @@ public:
 
       });
     }
-
   }
+
 private:
   std::future<void> fut;
   std::queue<T> mQueue;
