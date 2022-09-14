@@ -27,12 +27,12 @@ public:
     Q_PROPERTY(QString maskAddr MEMBER m_maskAddr READ getMaskAddr WRITE setMaskAddr NOTIFY maskAddrChanged)
     Q_PROPERTY(bool enableDHCP MEMBER m_enableDHCP READ getEnableDHCP WRITE setEnableDHCP NOTIFY enableDHCPChanged)
 
-    Q_PROPERTY(bool buttonStatus READ getButtonStatus WRITE setButtonStatus NOTIFY buttonStatusChanged())
+    Q_PROPERTY(bool buttonStatus MEMBER m_buttonStatus READ getButtonStatus WRITE setButtonStatus NOTIFY buttonStatusChanged())
 
     // these two property are used for keyboard, keyboard is called in the main screen so
     // for textfields in the menu items, width and exsistence of the keyboard should be handled internally.
-    Q_PROPERTY(bool keyFlag READ getKeyFlag WRITE setKeyFlag NOTIFY keyFlagChanged)
-    Q_PROPERTY(int keyWidth READ getKeyWidth WRITE setKeyWidth NOTIFY keyWidthChanged)
+    Q_PROPERTY(bool keyFlag MEMBER m_keyFlag WRITE setKeyFlag NOTIFY keyFlagChanged)
+    Q_PROPERTY(int keyWidth MEMBER m_keyWidth WRITE setKeyWidth NOTIFY keyWidthChanged)
 
     NetworkManager();
     ~NetworkManager();
@@ -56,12 +56,9 @@ public:
 
         bool getButtonStatus() const;
 
-        bool getKeyFlag() const;
-        int getKeyWidth() const;
-
         public slots:
         bool setIp();
-        //bool setRouter();
+
         bool setDHCP();
         bool setStatic();
     signals:
@@ -89,10 +86,10 @@ public:
         QString upCon = "nmcli con up 'Wired connection 1'";
         QString upDown = "nmcli con down 'Wired connection 1'";
 
-        bool buttonStatus;
+        bool m_buttonStatus;
 
-        bool keyFlag;
-        int keyWidth;
+        bool m_keyFlag;
+        int m_keyWidth;
 
         queueProcess<std::function<void()>> handler;
 };

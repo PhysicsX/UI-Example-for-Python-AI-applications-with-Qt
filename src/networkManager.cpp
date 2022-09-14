@@ -175,7 +175,6 @@ void NetworkManager::applyNetwork(bool tabBar)
 
 void NetworkManager::setIpAddr(const QString &ip)
 {
-    //qDebug()<<"setIpAddr";
     //protect undesired ip address.
     //It should be controlled in qml with regex
     if(ip.count(QChar('.')) == 3)
@@ -187,7 +186,6 @@ void NetworkManager::setIpAddr(const QString &ip)
 
 void NetworkManager::setEnableDHCP(const bool flag)
 {
-    //qDebug()<<"setEnableDHCP";
     m_enableDHCP = flag;
     emit enableDHCPChanged();
 }
@@ -217,19 +215,19 @@ void NetworkManager::setRouterAddr(const QString &routerAddr)
 
 void NetworkManager::setButtonStatus(const bool stat)
 {
-    buttonStatus = stat;
+    m_buttonStatus = stat;
     emit buttonStatusChanged();
 }
 
 void NetworkManager::setKeyFlag(const bool flag)
 {
-    keyFlag = flag;
+    m_keyFlag = flag;
     emit keyFlagChanged();
 }
 
 void NetworkManager::setKeyWidth(const int width)
 {
-    keyWidth = width;
+    m_keyWidth = width;
     emit keyWidthChanged();
 }
 
@@ -255,7 +253,7 @@ bool NetworkManager::getEnableDHCP() const
 
 bool NetworkManager::getButtonStatus() const
 {
-    return buttonStatus;
+    return m_buttonStatus;
 }
 
 bool NetworkManager::setDHCP()
@@ -343,11 +341,10 @@ bool NetworkManager::setDHCP()
         process.waitForFinished();
         p_stdout = process.readAllStandardOutput();
         p_stderr = process.readAllStandardError();
-        //qDebug()<<p_stdout;
-        //qDebug()<<p_stderr;
+
         int lastSlash = p_stdout.lastIndexOf('/');
         int prevSpace = p_stdout.lastIndexOf(' ');
-        //qDebug()<<out;
+
         QString out = p_stdout.mid(0, lastSlash);
         if(out.contains("\n"))
             out = "";
@@ -385,7 +382,6 @@ bool NetworkManager::setDHCP()
 
         setButtonStatus(true);
 
-        //backCont->changeText(tmpStr);
         if(tmpStr.contains("IP:"))
         {
             controller->changeText("ETHERNET Conneccted IP: "+ip);
@@ -400,7 +396,6 @@ bool NetworkManager::setDHCP()
         {
             controller->changeText(tmpStr+ " Connected IP: "+ ip);
         }
-        //backCont->changeText(tmpStr + "IP: "+ getIpAddr());
 
         controller->enableBack();
     };
@@ -428,7 +423,6 @@ bool NetworkManager::setStatic()
         process.start("bash", QStringList()<<"-c"<<"ip addr del "+m_ipAddr+"/24 dev eth0");
         process.waitForFinished();
 
-        //qDebug()<<"SetStatic function is called";
         // set Manual for wired
         process.start("bash", QStringList()<<"-c"<<staticCmd);
         result = process.waitForFinished();
@@ -440,31 +434,26 @@ bool NetworkManager::setStatic()
         }
 
         QString ip = m_ipAddr;
-        qDebug()<<ip;
+
         QString cmd = "nmcli con mod 'Wired connection 1' ipv4.addresses "+ip+"/24";
         process.start("bash", QStringList()<<"-c"<<cmd);
         process.waitForFinished();
         QString p_stdout = process.readAllStandardOutput();
         QString p_stderr = process.readAllStandardError();
-        qDebug()<<p_stdout;
-        qDebug()<<p_stderr;
 
         QString gateway = m_routerAddr;
-        //qDebug()<<gateway;
+
         cmd = "nmcli con mod 'Wired connection 1' ipv4.gateway "+gateway;
         process.start("bash", QStringList()<<"-c"<<cmd);
         process.waitForFinished();
         p_stdout = process.readAllStandardOutput();
         p_stderr = process.readAllStandardError();
-        //qDebug()<<p_stdout;
-        //qDebug()<<p_stderr;
 
         process.start("bash", QStringList()<<"-c"<<upCon);
         process.waitForFinished();
 
         setButtonStatus(true);
 
-        //backCont->changeText(tmpStr);
         if(tmpStr.contains("IP:"))
         {
             controller->changeText("ETHERNET Conneccted IP: "+ip);
@@ -488,13 +477,4 @@ bool NetworkManager::setStatic()
     return true;
 }
 
-bool NetworkManager::getKeyFlag() const
-{
-    return keyFlag;
-}
-
-int NetworkManager::getKeyWidth() const
-{
-    return keyWidth;
-}
 
