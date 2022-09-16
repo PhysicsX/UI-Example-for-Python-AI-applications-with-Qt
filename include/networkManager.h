@@ -85,6 +85,10 @@ public:
         QString modCmd = "nmcli con mod 'Wired connection 1' ipv4.gateway ";
         QString upCon = "nmcli con up 'Wired connection 1'";
         QString upDown = "nmcli con down 'Wired connection 1'";
+        QString showConnection = "nmcli connection show 'Wired connection 1' | grep  -w ipv4.method";
+        QString ipAddrCmd = "nmcli -g ip4.address connection show 'Wired connection 1'";
+        QString routerCmd = "nmcli connection show 'Wired connection 1' | grep  -w routers";
+        QString subnetCmd = "nmcli connection show 'Wired connection 1' | grep  -w subnet_mask";
 
         bool m_buttonStatus;
 

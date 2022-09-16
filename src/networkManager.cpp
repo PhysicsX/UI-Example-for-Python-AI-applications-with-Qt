@@ -23,7 +23,10 @@ NetworkManager::NetworkManager(): QObject()
 
         QProcess process;
 
-        process.start("bash", QStringList()<<"-c"<<"nmcli connection show 'Wired connection 1' | grep  -w ipv4.method");
+        process.start("bash",
+                      QStringList()<<"-c"
+                      <<showConnection);
+
         process.waitForFinished();
         QString p_stdout = process.readAllStandardOutput();
         QString p_stderr = process.readAllStandardError();
@@ -44,7 +47,7 @@ NetworkManager::NetworkManager(): QObject()
             setEnableDHCP(false);
         }
 
-        process.start("bash", QStringList()<<"-c"<<"nmcli -g ip4.address connection show 'Wired connection 1'");
+        process.start("bash", QStringList()<<"-c"<<ipAddrCmd);
         process.waitForFinished();
         p_stdout = process.readAllStandardOutput();
         p_stderr = process.readAllStandardError();
@@ -89,7 +92,7 @@ NetworkManager::NetworkManager(): QObject()
             }
         }
 
-        process.start("bash", QStringList()<<"-c"<<"nmcli connection show 'Wired connection 1' | grep  -w routers");
+        process.start("bash", QStringList()<<"-c"<<routerCmd);
         process.waitForFinished();
         p_stdout = process.readAllStandardOutput();
         p_stderr = process.readAllStandardError();
@@ -103,7 +106,7 @@ NetworkManager::NetworkManager(): QObject()
             setRouterAddr(out);
         }
 
-        process.start("bash", QStringList()<<"-c"<<"nmcli connection show 'Wired connection 1' | grep  -w subnet_mask");
+        process.start("bash", QStringList()<<"-c"<<subnetCmd);
         process.waitForFinished();
         p_stdout = process.readAllStandardOutput();
         p_stderr = process.readAllStandardError();
@@ -307,7 +310,7 @@ bool NetworkManager::setDHCP()
 
         std::this_thread::sleep_for(std::chrono::milliseconds(500));
 
-        process.start("bash", QStringList()<<"-c"<<"nmcli -g ip4.address connection show 'Wired connection 1'");
+        process.start("bash", QStringList()<<"-c"<<ipAddrCmd);
         process.waitForFinished();
         p_stdout = process.readAllStandardOutput();
         p_stderr = process.readAllStandardError();
@@ -337,7 +340,7 @@ bool NetworkManager::setDHCP()
         }
 
         std::this_thread::sleep_for(std::chrono::milliseconds(500));
-        process.start("bash", QStringList()<<"-c"<<"nmcli -g ip4.address connection show 'Wired connection 1'");
+        process.start("bash", QStringList()<<"-c"<<ipAddrCmd);
         process.waitForFinished();
         p_stdout = process.readAllStandardOutput();
         p_stderr = process.readAllStandardError();
@@ -352,7 +355,7 @@ bool NetworkManager::setDHCP()
         QString ip = out;
         setIpAddr(ip);
 
-        process.start("bash", QStringList()<<"-c"<<"nmcli connection show 'Wired connection 1' | grep  -w routers");
+        process.start("bash", QStringList()<<"-c"<<routerCmd);
         process.waitForFinished();
          p_stdout = process.readAllStandardOutput();
          p_stderr = process.readAllStandardError();
@@ -366,7 +369,7 @@ bool NetworkManager::setDHCP()
 
         setRouterAddr(out);
 
-        process.start("bash", QStringList()<<"-c"<<"nmcli connection show 'Wired connection 1' | grep  -w subnet_mask");
+        process.start("bash", QStringList()<<"-c"<<subnetCmd);
         process.waitForFinished();
         p_stdout = process.readAllStandardOutput();
         p_stderr = process.readAllStandardError();
