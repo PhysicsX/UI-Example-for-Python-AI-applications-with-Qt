@@ -3,6 +3,8 @@
 
 bool BackController::enableBack()
 {
+
+    std::lock_guard<std::mutex> guard(m);
     //emit enableButton();
     m_backImage->setProperty("enabled",true);
 
@@ -11,6 +13,7 @@ bool BackController::enableBack()
 
 bool BackController::disableBack()
 {
+    std::lock_guard<std::mutex> guard(m);
     //emit disableButton();
     m_backImage->setProperty("enabled",false);
 
@@ -19,6 +22,7 @@ bool BackController::disableBack()
 
 void BackController::setBackImage(QObject* it)
 {
+    std::lock_guard<std::mutex> guard(m);
     m_backImage = it;
     //item->setProperty("enabled",false);
     return;
@@ -26,6 +30,7 @@ void BackController::setBackImage(QObject* it)
 
 void BackController::changeText(QString txt)
 {
+    std::lock_guard<std::mutex> guard(m);
     m_texNotification->setProperty("text",txt);
     return;
 }
@@ -33,6 +38,7 @@ void BackController::changeText(QString txt)
 
 void BackController::setItemText(QObject* it)
 {
+    std::lock_guard<std::mutex> guard(m);
     m_texNotification = it;
     //item->setProperty("enabled",false);
     return;
@@ -40,28 +46,33 @@ void BackController::setItemText(QObject* it)
 
 void BackController::setItemTextAnime(QObject* it)
 {
+    std::lock_guard<std::mutex> guard(m);
     m_textAnime = it;
     return;
 }
 
 QString BackController::getText()
 {
+    std::lock_guard<std::mutex> guard(m);
     return m_texNotification->property("text").toString();
 }
 
 void BackController::enableAnime()
 {
+    std::lock_guard<std::mutex> guard(m);
     m_textAnime->setProperty("running",true);
     return;
 }
 
 void BackController::disableAnime()
 {
+    std::lock_guard<std::mutex> guard(m);
     m_textAnime->setProperty("running",false);
     return;
 }
 void BackController::getVis(bool flag)
 {
+    std::lock_guard<std::mutex> guard(m);
     //to check signal-slot
     qDebug()<<"flag inside back"<<flag;
     return;
