@@ -12,6 +12,7 @@
 #include <QDebug>
 #include <QTimer>
 #include <thread>
+#include <mutex>
 
 // Singleton class for backend controller.
 // this class is used by all menu items
@@ -25,6 +26,8 @@ class BackController : public QObject
     BackController& operator=(const BackController&) = delete;
     BackController(BackController&&) = delete;
     BackController operator=(BackController&&) = delete;
+
+    std::mutex m;
 
     signals:
        void sendVis(bool flag, int width);
