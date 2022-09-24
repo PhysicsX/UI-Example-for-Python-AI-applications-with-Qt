@@ -2,6 +2,10 @@
 
 In this repository you can find that the User Interface to manage hardware configurations and draw related objects with Qt and QML for Python AI visual applications.
 
+Block Diagram:
+
+![alt text](https://github.com/PhysicsX/UI-Example-for-Python-AI-applications-with-Qt/blob/main/BlockDiagram.png?raw=true)
+
 ## Installation
 
 Qt should be installed in the target. Reference Qt version is 5.15.0. 
