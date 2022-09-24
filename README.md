@@ -4,7 +4,7 @@ In this repository you can find that the User Interface to manage hardware confi
 
 Block Diagram:
 
-![alt text](https://github.com/PhysicsX/UI-Example-for-Python-AI-applications-with-Qt/blob/master/BlockDiagram.png?raw=true)
+<img src="https://github.com/PhysicsX/UI-Example-for-Python-AI-applications-with-Qt/blob/master/BlockDiagram.png?raw=true" width="250">
 
 Looks like:
 
