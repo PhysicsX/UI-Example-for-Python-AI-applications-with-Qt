@@ -6,6 +6,10 @@ Block Diagram:
 
 ![alt text](https://github.com/PhysicsX/UI-Example-for-Python-AI-applications-with-Qt/blob/main/BlockDiagram.png?raw=true)
 
+Looks like:
+
+![](https://github.com/PhysicsX/UI-Example-for-Python-AI-applications-with-Qt/blob/main/demo.gif)
+
 ## Installation
 
 Qt should be installed in the target. Reference Qt version is 5.15.0. 
