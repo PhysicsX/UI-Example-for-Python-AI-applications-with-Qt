@@ -6,127 +6,131 @@
 NetworkManager::NetworkManager(): QObject()
 {
 
-    controller = getInstance();
-
-    if(!controller)
-    {
-        return;
-    }
-
     QObject::connect(controller,SIGNAL(sendVis(bool, int)),this,SLOT(setKeyboardProp(bool, int)));
 
-    auto job = [this](){
+    auto job {
 
-        controller->disableBack();
+        [this](){
 
-        setButtonStatus(false);
+            controller = getInstance();
 
-        QProcess process;
-
-        process.start("bash",
-                      QStringList()<<"-c"
-                      <<showConnection);
-
-        process.waitForFinished();
-        QString p_stdout = process.readAllStandardOutput();
-        QString p_stderr = process.readAllStandardError();
-        //qDebug()<<p_stdout;
-        int lastSlash = p_stdout.lastIndexOf('\n');
-        int prevSpace = p_stdout.lastIndexOf(' ');
-        QString out = p_stdout.mid(prevSpace+1, lastSlash - prevSpace-1);
-        //qDebug()<<out;
-        if(out.contains("\n"))
-            out = "";
-
-        if(out == "manual")
-        {
-        setEnableDHCP(true);
-        }
-        else if(out == "auto")
-        {
-            setEnableDHCP(false);
-        }
-
-        process.start("bash", QStringList()<<"-c"<<ipAddrCmd);
-        process.waitForFinished();
-        p_stdout = process.readAllStandardOutput();
-        p_stderr = process.readAllStandardError();
-
-        if(p_stdout.contains("|")) // there can be old ip addresses. Remove them !
-        {
-            int numberLine = p_stdout.count("|");
-
-            for(int i=0; i < numberLine; i++)
+            if(!controller)
             {
-                lastSlash = p_stdout.indexOf('/');
+                return;
+            }
+
+            controller->disableBack();
+
+            setButtonStatus(false);
+
+            QProcess process;
+
+            process.start("bash",
+                          QStringList()<<"-c"
+                          <<showConnection);
+
+            process.waitForFinished();
+            QString p_stdout = process.readAllStandardOutput();
+            QString p_stderr = process.readAllStandardError();
+            //qDebug()<<p_stdout;
+            int lastSlash = p_stdout.lastIndexOf('\n');
+            int prevSpace = p_stdout.lastIndexOf(' ');
+            QString out = p_stdout.mid(prevSpace+1, lastSlash - prevSpace-1);
+            //qDebug()<<out;
+            if(out.contains("\n"))
+                out = "";
+
+            if(out == "manual")
+            {
+            setEnableDHCP(true);
+            }
+            else if(out == "auto")
+            {
+                setEnableDHCP(false);
+            }
+
+            process.start("bash", QStringList()<<"-c"<<ipAddrCmd);
+            process.waitForFinished();
+            p_stdout = process.readAllStandardOutput();
+            p_stderr = process.readAllStandardError();
+
+            if(p_stdout.contains("|")) // there can be old ip addresses. Remove them !
+            {
+                int numberLine = p_stdout.count("|");
+
+                for(int i=0; i < numberLine; i++)
+                {
+                    lastSlash = p_stdout.indexOf('/');
+                    out = p_stdout.mid(0, lastSlash);
+
+                    //delete old ip address even if it is in the same subnet
+                    process.start("bash", QStringList()<<"-c"<<"ip addr del "+out+"/24 dev eth0");
+                    bool result = process.waitForFinished();
+                    if(!result)
+                    {
+                        qDebug()<<"ip addr can not be deleted "<<result;
+                    }
+                    p_stdout.remove(0,lastSlash+6);
+
+                }
+
+                lastSlash = p_stdout.lastIndexOf('/');
                 out = p_stdout.mid(0, lastSlash);
 
-                //delete old ip address even if it is in the same subnet
-                process.start("bash", QStringList()<<"-c"<<"ip addr del "+out+"/24 dev eth0");
-                bool result = process.waitForFinished();
-                if(!result)
+                if(!out.contains("\n"))
                 {
-                    qDebug()<<"ip addr can not be deleted "<<result;
+                    setIpAddr(out);
                 }
-                p_stdout.remove(0,lastSlash+6);
 
             }
+            else
+            {
+                lastSlash = p_stdout.lastIndexOf('/');
+                out = p_stdout.mid(0, lastSlash);
 
-            lastSlash = p_stdout.lastIndexOf('/');
-            out = p_stdout.mid(0, lastSlash);
+                if(!out.contains("\n"))
+                {
+                    setIpAddr(out);
+                }
+            }
+
+            process.start("bash", QStringList()<<"-c"<<routerCmd);
+            process.waitForFinished();
+            p_stdout = process.readAllStandardOutput();
+            p_stderr = process.readAllStandardError();
+
+            lastSlash = p_stdout.lastIndexOf('\n');
+            prevSpace = p_stdout.lastIndexOf(' ');
+            out = p_stdout.mid(prevSpace+1, lastSlash - prevSpace-1);
 
             if(!out.contains("\n"))
             {
-                setIpAddr(out);
+                setRouterAddr(out);
             }
 
-        }
-        else
-        {
-            lastSlash = p_stdout.lastIndexOf('/');
-            out = p_stdout.mid(0, lastSlash);
+            process.start("bash", QStringList()<<"-c"<<subnetCmd);
+            process.waitForFinished();
+            p_stdout = process.readAllStandardOutput();
+            p_stderr = process.readAllStandardError();
 
-            if(!out.contains("\n"))
+            lastSlash = p_stdout.lastIndexOf('\n');
+            prevSpace = p_stdout.lastIndexOf(' ');
+            out = p_stdout.mid(prevSpace+1, lastSlash - prevSpace-1);
+
+            if(out.contains("\n"))
+                out = "";
+
+            setMaskAddr(out);
+
+            if(!getIpAddr().isEmpty())
             {
-                setIpAddr(out);
+                controller->changeText("ETHERNET Connected IP: "+ getIpAddr());
             }
+
+            setButtonStatus(true);
+            controller->enableBack();
+
         }
-
-        process.start("bash", QStringList()<<"-c"<<routerCmd);
-        process.waitForFinished();
-        p_stdout = process.readAllStandardOutput();
-        p_stderr = process.readAllStandardError();
-
-        lastSlash = p_stdout.lastIndexOf('\n');
-        prevSpace = p_stdout.lastIndexOf(' ');
-        out = p_stdout.mid(prevSpace+1, lastSlash - prevSpace-1);
-
-        if(!out.contains("\n"))
-        {
-            setRouterAddr(out);
-        }
-
-        process.start("bash", QStringList()<<"-c"<<subnetCmd);
-        process.waitForFinished();
-        p_stdout = process.readAllStandardOutput();
-        p_stderr = process.readAllStandardError();
-
-        lastSlash = p_stdout.lastIndexOf('\n');
-        prevSpace = p_stdout.lastIndexOf(' ');
-        out = p_stdout.mid(prevSpace+1, lastSlash - prevSpace-1);
-
-        if(out.contains("\n"))
-            out = "";
-
-        setMaskAddr(out);
-
-        if(!getIpAddr().isEmpty())
-        {
-            controller->changeText("ETHERNET Connected IP: "+ getIpAddr());
-        }
-
-        setButtonStatus(true);
-        controller->enableBack();
 
     };
 
@@ -262,146 +266,150 @@ bool NetworkManager::getButtonStatus() const
 bool NetworkManager::setDHCP()
 {
 
-    auto job = [this](){
+    auto job {
 
-        controller = getInstance();
-        controller->disableBack();
-        QString tmpStr = controller->getText();
-        controller->changeText("Configuring device please wait ....");
-       // backCont->enableAnime();
-        setButtonStatus(false);
+        [this](){
 
-        QProcess process;
-        bool result = true;
+            controller = getInstance();
+            controller->disableBack();
+            QString tmpStr = controller->getText();
+            controller->changeText("Configuring device please wait ....");
+           // backCont->enableAnime();
+            setButtonStatus(false);
 
-        QString p_stdout;
-        QString p_stderr;
+            QProcess process;
+            bool result = true;
 
-        QString tmpIp = m_ipAddr;
+            QString p_stdout;
+            QString p_stderr;
+
+            QString tmpIp = m_ipAddr;
 
 
-        // set Auto for wired
-        process.start("bash", QStringList()<<"-c"<<autoCmd);
-        result = process.waitForFinished();
+            // set Auto for wired
+            process.start("bash", QStringList()<<"-c"<<autoCmd);
+            result = process.waitForFinished();
 
-        if(!result)
-        {
-            qDebug()<<"setDHPC failed "<<result;
-            //return result;
-        }
-
-        process.start("bash", QStringList()<<"-c"<<upDown);
-        process.waitForFinished();
-        std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-
-        process.start("bash", QStringList()<<"-c"<<upCon);
-        process.waitForFinished();
-        std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-
-        //delete old ip address even if it is in the same subnet
-        //process.start("bash", QStringList()<<"-c"<<"ip addr del "+tmpIp+"/24 dev eth0");
-        //result = process.waitForFinished();
-        //if(!result)
-        //{
-        //    qDebug()<<"ip addr failed "<<result;
-        //    //return result;
-        //}
-        //delete old ip address even if it is in the same subnet
-
-        std::this_thread::sleep_for(std::chrono::milliseconds(500));
-
-        process.start("bash", QStringList()<<"-c"<<ipAddrCmd);
-        process.waitForFinished();
-        p_stdout = process.readAllStandardOutput();
-        p_stderr = process.readAllStandardError();
-        //qDebug()<<p_stdout;
-        //qDebug()<<p_stderr;
-        if(p_stdout.contains("|")) // there can be old ip addresses. Remove them !
-        {
-            int lastSlash;
-            int numberLine = p_stdout.count("|");
-            //int ipNumber = numberLine + 1;
-            for(int i=0; i < numberLine; i++)
+            if(!result)
             {
-                lastSlash = p_stdout.indexOf('/');
-                QString out = p_stdout.mid(0, lastSlash);
+                qDebug()<<"setDHPC failed "<<result;
+                //return result;
+            }
 
-                //delete old ip address even if it is in the same subnet
-                process.start("bash", QStringList()<<"-c"<<"ip addr del "+out+"/24 dev eth0");
-                bool result = process.waitForFinished();
-                if(!result)
+            process.start("bash", QStringList()<<"-c"<<upDown);
+            process.waitForFinished();
+            std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+
+            process.start("bash", QStringList()<<"-c"<<upCon);
+            process.waitForFinished();
+            std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+
+            //delete old ip address even if it is in the same subnet
+            //process.start("bash", QStringList()<<"-c"<<"ip addr del "+tmpIp+"/24 dev eth0");
+            //result = process.waitForFinished();
+            //if(!result)
+            //{
+            //    qDebug()<<"ip addr failed "<<result;
+            //    //return result;
+            //}
+            //delete old ip address even if it is in the same subnet
+
+            std::this_thread::sleep_for(std::chrono::milliseconds(500));
+
+            process.start("bash", QStringList()<<"-c"<<ipAddrCmd);
+            process.waitForFinished();
+            p_stdout = process.readAllStandardOutput();
+            p_stderr = process.readAllStandardError();
+            //qDebug()<<p_stdout;
+            //qDebug()<<p_stderr;
+            if(p_stdout.contains("|")) // there can be old ip addresses. Remove them !
+            {
+                int lastSlash;
+                int numberLine = p_stdout.count("|");
+                //int ipNumber = numberLine + 1;
+                for(int i=0; i < numberLine; i++)
                 {
-                    qDebug()<<"ip addr can not deleted "<<result;
+                    lastSlash = p_stdout.indexOf('/');
+                    QString out = p_stdout.mid(0, lastSlash);
+
+                    //delete old ip address even if it is in the same subnet
+                    process.start("bash", QStringList()<<"-c"<<"ip addr del "+out+"/24 dev eth0");
+                    bool result = process.waitForFinished();
+                    if(!result)
+                    {
+                        qDebug()<<"ip addr can not deleted "<<result;
+                    }
+                    p_stdout.remove(0,lastSlash+6);
+
                 }
-                p_stdout.remove(0,lastSlash+6);
 
             }
 
+            std::this_thread::sleep_for(std::chrono::milliseconds(500));
+            process.start("bash", QStringList()<<"-c"<<ipAddrCmd);
+            process.waitForFinished();
+            p_stdout = process.readAllStandardOutput();
+            p_stderr = process.readAllStandardError();
+
+            int lastSlash = p_stdout.lastIndexOf('/');
+            int prevSpace = p_stdout.lastIndexOf(' ');
+
+            QString out = p_stdout.mid(0, lastSlash);
+            if(out.contains("\n"))
+                out = "";
+
+            QString ip = out;
+            setIpAddr(ip);
+
+            process.start("bash", QStringList()<<"-c"<<routerCmd);
+            process.waitForFinished();
+             p_stdout = process.readAllStandardOutput();
+             p_stderr = process.readAllStandardError();
+            qDebug()<<p_stdout;
+            lastSlash = p_stdout.lastIndexOf('\n');
+            prevSpace = p_stdout.lastIndexOf(' ');
+            out = p_stdout.mid(prevSpace+1, lastSlash - prevSpace-1);
+            qDebug()<<out;
+            if(out.contains("\n"))
+                out = "";
+
+            setRouterAddr(out);
+
+            process.start("bash", QStringList()<<"-c"<<subnetCmd);
+            process.waitForFinished();
+            p_stdout = process.readAllStandardOutput();
+            p_stderr = process.readAllStandardError();
+            qDebug()<<p_stdout;
+            lastSlash = p_stdout.lastIndexOf('\n');
+            prevSpace = p_stdout.lastIndexOf(' ');
+            out = p_stdout.mid(prevSpace+1, lastSlash - prevSpace-1);
+            qDebug()<<out;
+            if(out.contains("\n"))
+                out = "";
+
+               setMaskAddr(out);
+
+            setButtonStatus(true);
+
+            if(tmpStr.contains("IP:"))
+            {
+                controller->changeText("ETHERNET Conneccted IP: "+ip);
+            }
+            if(tmpStr.contains("."))
+            {
+                QString tmp = getIpAddr();
+                tmpStr.remove(tmp);
+                controller->changeText(tmpStr+ip);
+            }
+            else
+            {
+                controller->changeText(tmpStr+ " Connected IP: "+ ip);
+            }
+
+            controller->enableBack();
         }
-
-        std::this_thread::sleep_for(std::chrono::milliseconds(500));
-        process.start("bash", QStringList()<<"-c"<<ipAddrCmd);
-        process.waitForFinished();
-        p_stdout = process.readAllStandardOutput();
-        p_stderr = process.readAllStandardError();
-
-        int lastSlash = p_stdout.lastIndexOf('/');
-        int prevSpace = p_stdout.lastIndexOf(' ');
-
-        QString out = p_stdout.mid(0, lastSlash);
-        if(out.contains("\n"))
-            out = "";
-
-        QString ip = out;
-        setIpAddr(ip);
-
-        process.start("bash", QStringList()<<"-c"<<routerCmd);
-        process.waitForFinished();
-         p_stdout = process.readAllStandardOutput();
-         p_stderr = process.readAllStandardError();
-        qDebug()<<p_stdout;
-        lastSlash = p_stdout.lastIndexOf('\n');
-        prevSpace = p_stdout.lastIndexOf(' ');
-        out = p_stdout.mid(prevSpace+1, lastSlash - prevSpace-1);
-        qDebug()<<out;
-        if(out.contains("\n"))
-            out = "";
-
-        setRouterAddr(out);
-
-        process.start("bash", QStringList()<<"-c"<<subnetCmd);
-        process.waitForFinished();
-        p_stdout = process.readAllStandardOutput();
-        p_stderr = process.readAllStandardError();
-        qDebug()<<p_stdout;
-        lastSlash = p_stdout.lastIndexOf('\n');
-        prevSpace = p_stdout.lastIndexOf(' ');
-        out = p_stdout.mid(prevSpace+1, lastSlash - prevSpace-1);
-        qDebug()<<out;
-        if(out.contains("\n"))
-            out = "";
-
-           setMaskAddr(out);
-
-        setButtonStatus(true);
-
-        if(tmpStr.contains("IP:"))
-        {
-            controller->changeText("ETHERNET Conneccted IP: "+ip);
-        }
-        if(tmpStr.contains("."))
-        {
-            QString tmp = getIpAddr();
-            tmpStr.remove(tmp);
-            controller->changeText(tmpStr+ip);
-        }
-        else
-        {
-            controller->changeText(tmpStr+ " Connected IP: "+ ip);
-        }
-
-        controller->enableBack();
     };
+
 
     handler.addQueue(job);
 
@@ -412,67 +420,70 @@ bool NetworkManager::setStatic()
 {
 
 
-    auto job = [this](){
+    auto job {
 
-        controller = getInstance();
-        controller->disableBack();
-        bool result = false;
-        QString tmpStr = controller->getText();
-        controller->changeText("Configuring device please wait ....");
-        setButtonStatus(false);
+        [this](){
 
-        QProcess process;
+            controller = getInstance();
+            controller->disableBack();
+            bool result = false;
+            QString tmpStr = controller->getText();
+            controller->changeText("Configuring device please wait ....");
+            setButtonStatus(false);
 
-        process.start("bash", QStringList()<<"-c"<<"ip addr del "+m_ipAddr+"/24 dev eth0");
-        process.waitForFinished();
+            QProcess process;
 
-        // set Manual for wired
-        process.start("bash", QStringList()<<"-c"<<staticCmd);
-        result = process.waitForFinished();
+            process.start("bash", QStringList()<<"-c"<<"ip addr del "+m_ipAddr+"/24 dev eth0");
+            process.waitForFinished();
 
-        if(!result)
-        {
-            qDebug()<<"setStatıc failed "<<result;
-            //return result;
+            // set Manual for wired
+            process.start("bash", QStringList()<<"-c"<<staticCmd);
+            result = process.waitForFinished();
+
+            if(!result)
+            {
+                qDebug()<<"setStatıc failed "<<result;
+                //return result;
+            }
+
+            QString ip = m_ipAddr;
+
+            QString cmd = "nmcli con mod 'Wired connection 1' ipv4.addresses "+ip+"/24";
+            process.start("bash", QStringList()<<"-c"<<cmd);
+            process.waitForFinished();
+            QString p_stdout = process.readAllStandardOutput();
+            QString p_stderr = process.readAllStandardError();
+
+            QString gateway = m_routerAddr;
+
+            cmd = "nmcli con mod 'Wired connection 1' ipv4.gateway "+gateway;
+            process.start("bash", QStringList()<<"-c"<<cmd);
+            process.waitForFinished();
+            p_stdout = process.readAllStandardOutput();
+            p_stderr = process.readAllStandardError();
+
+            process.start("bash", QStringList()<<"-c"<<upCon);
+            process.waitForFinished();
+
+            setButtonStatus(true);
+
+            if(tmpStr.contains("IP:"))
+            {
+                controller->changeText("ETHERNET Conneccted IP: "+ip);
+            }
+            if(tmpStr.contains("."))
+            {
+                QString tmp = getIpAddr();
+                tmpStr.remove(tmp);
+                controller->changeText(tmpStr+ip);
+            }
+            else
+            {
+                controller->changeText(tmpStr+ " Connected IP: "+ ip);
+            }
+
+            controller->enableBack();
         }
-
-        QString ip = m_ipAddr;
-
-        QString cmd = "nmcli con mod 'Wired connection 1' ipv4.addresses "+ip+"/24";
-        process.start("bash", QStringList()<<"-c"<<cmd);
-        process.waitForFinished();
-        QString p_stdout = process.readAllStandardOutput();
-        QString p_stderr = process.readAllStandardError();
-
-        QString gateway = m_routerAddr;
-
-        cmd = "nmcli con mod 'Wired connection 1' ipv4.gateway "+gateway;
-        process.start("bash", QStringList()<<"-c"<<cmd);
-        process.waitForFinished();
-        p_stdout = process.readAllStandardOutput();
-        p_stderr = process.readAllStandardError();
-
-        process.start("bash", QStringList()<<"-c"<<upCon);
-        process.waitForFinished();
-
-        setButtonStatus(true);
-
-        if(tmpStr.contains("IP:"))
-        {
-            controller->changeText("ETHERNET Conneccted IP: "+ip);
-        }
-        if(tmpStr.contains("."))
-        {
-            QString tmp = getIpAddr();
-            tmpStr.remove(tmp);
-            controller->changeText(tmpStr+ip);
-        }
-        else
-        {
-            controller->changeText(tmpStr+ " Connected IP: "+ ip);
-        }
-
-        controller->enableBack();
     };
 
     handler.addQueue(job);
