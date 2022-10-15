@@ -280,7 +280,7 @@ if [ -d "$DIR" ]; then
 
   echo "qtbase is exist ${DIR}..."
 else
-	#tar xf $qtbaseXZ
+	tar xf $qtbaseXZ
 	cd $HOME/$qtbaseDir
 	./configure -opengl es2 -opensource -confirm-license -force-debug-info -prefix $INSTALLDIR -nomake examples -nomake tests -v |& tee -a $OUTPUT_FILE
 	make -j8
@@ -291,63 +291,63 @@ fi
 
 tar xf $qtdeclarativeXZ
 cd $HOME/$qtdeclarativeDir
-/usr/local/$INSTALLDIR/bin/qmake |& tee -a $OUTPUT_FILE
+$INSTALLDIR/bin/qmake |& tee -a $OUTPUT_FILE
 make -j8 |& tee -a $OUTPUT_FILE
 make install
 cd ..
 
 tar xf $qtquickcontrolsXZ
 cd $HOME/$qtquickcontrolsDir
-/usr/local/$INSTALLDIR/bin/qmake |& tee -a $OUTPUT_FILE
+$INSTALLDIR/bin/qmake |& tee -a $OUTPUT_FILE
 make -j8 |& tee -a $OUTPUT_FILE
 make install
 cd ..
 
 tar xf $qtquickcontrols2XZ
 cd $HOME/$qtquickcontrols2Dir
-/usr/local/$INSTALLDIR/bin/qmake |& tee -a $OUTPUT_FILE
+$INSTALLDIR/bin/qmake |& tee -a $OUTPUT_FILE
 make -j8 |& tee -a $OUTPUT_FILE
 make install
 cd ..
  
 tar xf $qtmultimediaXZ
 cd $HOME/$qtmultimediaDir
-/usr/local/$INSTALLDIR/bin/qmake |& tee -a $OUTPUT_FILE
+$INSTALLDIR/bin/qmake |& tee -a $OUTPUT_FILE
 make -j8 |& tee -a $OUTPUT_FILE
 make install
 cd ..
  
 tar xf $qtsvgXZ
 cd $HOME/$qtsvgDir
-/usr/local/$INSTALLDIR/bin/qmake |& tee -a $OUTPUT_FILE
+$INSTALLDIR/bin/qmake |& tee -a $OUTPUT_FILE
 make -j8 |& tee -a $OUTPUT_FILE
 make install
 cd ..
 
 tar xf $qtvirtualkeyboardXZ
 cd $HOME/$qtvirtualkeyboardDir
-/usr/local/$INSTALLDIR/bin/qmake |& tee -a $OUTPUT_FILE
+$INSTALLDIR/bin/qmake |& tee -a $OUTPUT_FILE
 make -j8 |& tee -a $OUTPUT_FILE
 make install
 cd ..
 
 tar xf $qtgraphicaleffectsXZ
 cd $HOME/$qtgraphicaleffectsDir
-/usr/local/$INSTALLDIR/bin/qmake |& tee -a $OUTPUT_FILE
+$INSTALLDIR/bin/qmake |& tee -a $OUTPUT_FILE
 make -j8 |& tee -a $OUTPUT_FILE
 make install
 cd ..
 
 tar xf $HOME/$qtwebsocketsXZ
 cd $HOME/$qtwebsocketsDir
-/usr/local/$INSTALLDIR/bin/qmake
+$INSTALLDIR/bin/qmake
 make -j8
 make install
 cd ..
 
 tar xf $HOME/$qtwebglpluginXZ
 cd $HOME/$qtwebglpluginDir
-/usr/local/$INSTALLDIR/bin/qmake
+$INSTALLDIR/bin/qmake
 make -j8
 make install
 cd ..
