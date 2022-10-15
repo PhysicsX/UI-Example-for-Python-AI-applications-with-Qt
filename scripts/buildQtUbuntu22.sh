@@ -273,7 +273,7 @@ echo "qtbase "
 sleep 1
 
 
-DIR="/usr/local/$INSTALLDIR/include/QtCore"
+DIR="$INSTALLDIR/include/QtCore"
 
 
 if [ -d "$DIR" ]; then
@@ -282,7 +282,7 @@ if [ -d "$DIR" ]; then
 else
 	#tar xf $qtbaseXZ
 	cd $HOME/$qtbaseDir
-	./configure -opengl es2 -opensource -confirm-license -force-debug-info -prefix /usr/local/$INSTALLDIR -nomake examples -nomake tests -v |& tee -a $OUTPUT_FILE
+	./configure -opengl es2 -opensource -confirm-license -force-debug-info -prefix $INSTALLDIR -nomake examples -nomake tests -v |& tee -a $OUTPUT_FILE
 	make -j8
 	make install
 	export QT_SELECT=5
