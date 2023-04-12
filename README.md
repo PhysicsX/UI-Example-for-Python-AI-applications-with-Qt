@@ -315,3 +315,9 @@ Then for the facedetection application:
 # cd scripts
 # python3 faceDetectionShm.py
 ```
+
+### Citation
+
+Ulas Dikme (2021). *Industrial user interface software design for visual
+python AI applications using embedded linux based systems*. Journal of Applied and Physical Sciences, 7(1), 1-10. [10.20474/japs-7.1](https://doi.org/10.20474/japs-7.1)
+
